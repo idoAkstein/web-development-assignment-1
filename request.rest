@@ -79,3 +79,13 @@ Content-Type: application/json
 }
 
 ###
+
+# update user
+PUT http://localhost:8080/users/677941ec866abf2b85f71c93
+Content-Type: application/json
+
+{
+ "username": "ido1"
+}
+
+###
