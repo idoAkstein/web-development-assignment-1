@@ -122,4 +122,69 @@ describe('Comments Tests', () => {
         expect(statusCode).toBe(200);
         expect(deletedComment.deletedCount).toBe(1);
     });
+
+    test('Should not delete comment with invalid id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).delete('/comments/invalidID');
+        expect(statusCode).toBe(400);
+        expect(message).toBe('id invalidID is not valid');
+    });
+
+    test('Should not get comment with invalid id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).get('/comments/invalidID');
+        expect(statusCode).toBe(400);
+        expect(message).toBe('Comment id invalidID is not valid');
+    });
+
+    test('Should not get comments with invalid post id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).get('/comments/post/invalidID');
+        expect(statusCode).toBe(400);
+        expect(message).toBe('Post id invalidID is not valid');
+    });
+
+    test('Should not create comment with missing body params', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).post('/comments').send({ content: 'Test Comment' });
+        expect(statusCode).toBe(400);
+        expect(message).toBe('body param is missing (sender or postID)');
+    });
+
+    test('Should not create comment with invalid post id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).post('/comments').send({ sender: userId, content: 'Test Comment', postID: 'invalidID' });
+        expect(statusCode).toBe(400);
+        expect(message).toBe('invalid postID: invalidID');
+    });
+
+    test('Should not create comment with non existing post id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app)
+            .post('/comments')
+            .send({ sender: userId, content: 'Test Comment', postID: '60c4b7e3b7a1a4f3f8e8f3d7' });
+        expect(statusCode).toBe(400);
+        expect(message).toBe("post with id: 60c4b7e3b7a1a4f3f8e8f3d7 doesn't exists");
+    });
+
+    test('Should not edit comment with invalid id', async () => {
+        const {
+            statusCode,
+            body: { message },
+        } = await request(app).put('/comments/invalidID').send({ content: 'Edited Comment' });
+        expect(statusCode).toBe(400);
+        expect(message).toBe('id: invalidID is not valid');
+    });
 });
