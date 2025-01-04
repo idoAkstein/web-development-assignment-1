@@ -69,3 +69,28 @@ Content-Type: application/json
 GET   http://localhost:8080/comments/674069829f3ed9c93edb75b0
 
 ###
+
+# create user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+ "username": "ido", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
+}
+
+###
+
+# update user
+PUT http://localhost:8080/users/677941ec866abf2b85f71c93
+Content-Type: application/json
+
+{
+ "username": "ido1"
+}
+
+###
+
+# delete user
+DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
+
+###
