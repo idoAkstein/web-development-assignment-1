@@ -99,3 +99,8 @@ DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
 GET http://localhost:8080/users/67796f764899e36c4973095c
 
 ###
+
+# get all users
+GET http://localhost:8080/users
+
+###

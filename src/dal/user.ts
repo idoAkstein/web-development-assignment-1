@@ -7,3 +7,5 @@ export const editUser = async (user: Partial<User>, id: string) => await userMod
 export const deleteUser = async (id: string) => await userModel.deleteOne({ _id: id });
 
 export const getUserById = async (id: string) => await userModel.findById(id);
+
+export const getAllUsers = async () => await userModel.find().select('-__v -password');

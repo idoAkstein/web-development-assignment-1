@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createUser, deleteUser, editUser, getUserById } from '../dal';
+import { createUser, deleteUser, editUser, getAllUsers, getUserById } from '../dal';
 
 export const userRouter = Router();
 
@@ -51,4 +51,8 @@ userRouter.get('/:id', async (req, res) => {
     }
 
     res.status(200).send(user);
+});
+
+userRouter.get('/', async (_req, res) => {
+    res.status(200).send({ users: await getAllUsers() });
 });
