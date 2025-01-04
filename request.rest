@@ -75,23 +75,28 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
- "username": "ido3", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
+ "username": "ido5", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
 }
 
 ###
 
 # update user
-PUT http://localhost:8080/users/677941ec866abf2b85f71c93
+PUT http://localhost:8080/users/67796f764899e36c4973095c
 Content-Type: application/json
 
 {
- "username": "ido1"
+ "username": "ido4"
 }
 
 ###
 
 # delete user
 DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
+
+###
+
+# get user by id
+GET http://localhost:8080/users/67796f764899e36c4973095c
 
 ###
 
