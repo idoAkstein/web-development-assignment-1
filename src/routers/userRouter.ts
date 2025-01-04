@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createUser, deleteUser, editUser } from '../dal';
+import { createUser, deleteUser, editUser, getAllUsers } from '../dal';
 
 export const userRouter = Router();
 
@@ -35,4 +35,8 @@ userRouter.delete('/:id', async (req, res) => {
 
     await deleteUser(id);
     res.status(200).send({ message: 'delete succeeded' });
+});
+
+userRouter.get('/', async (_req, res) => {
+    res.status(200).send({ users: await getAllUsers() });
 });
