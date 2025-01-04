@@ -89,3 +89,8 @@ Content-Type: application/json
 }
 
 ###
+
+# delete user
+DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
+
+###
