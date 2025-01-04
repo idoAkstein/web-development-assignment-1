@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createUser, deleteUser, editUser } from '../dal';
+import { createUser, deleteUser, editUser, getUserById } from '../dal';
 
 export const userRouter = Router();
 
@@ -35,4 +35,20 @@ userRouter.delete('/:id', async (req, res) => {
 
     await deleteUser(id);
     res.status(200).send({ message: 'delete succeeded' });
+});
+
+userRouter.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    if (!isValidObjectId(id)) {
+        res.status(400).send({ message: `id ${id} is not valid` });
+        return;
+    }
+
+    const user = await getUserById(id);
+    if (!user) {
+        res.status(404).send({ message: `didn't find user with id: ${id}` });
+        return;
+    }
+
+    res.status(200).send(user);
 });
