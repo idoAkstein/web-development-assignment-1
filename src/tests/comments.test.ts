@@ -3,7 +3,6 @@ import { initApp } from '../server/initApp';
 import mongoose from 'mongoose';
 import { commentModel } from '../models/comments';
 import { Express } from 'express';
-import testComments from './test_comments.json';
 import { User, userModel } from '../models';
 import { postModel } from '../models';
 
