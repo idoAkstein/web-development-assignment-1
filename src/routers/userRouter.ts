@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createUser, editUser } from '../dal';
+import { createUser, deleteUser, editUser } from '../dal';
 
 export const userRouter = Router();
 
@@ -24,4 +24,15 @@ userRouter.put('/:id', async (req, res) => {
 
     await editUser(req.body, id);
     res.status(200).send({ message: 'update succeeded' });
+});
+
+userRouter.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    if (!isValidObjectId(id)) {
+        res.status(400).send({ message: `id ${id} is not valid` });
+        return;
+    }
+
+    await deleteUser(id);
+    res.status(200).send({ message: 'delete succeeded' });
 });
