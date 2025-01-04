@@ -3,26 +3,28 @@ import { initApp } from '../server/initApp';
 import mongoose from 'mongoose';
 import { postModel } from '../models/post';
 import { Express } from 'express';
-// import userModel, { IUser } from "../models/users";
+import { User, userModel } from '../models/user';
 
 let app: Express;
 
-// type User = IUser & { token?: string };
-// const testUser: User = {
-//   email: "test@user.com",
-//   password: "testpassword",
-// }
-
+const testUser: User = {
+    username: 'testuser',
+    email: 'test@user.com',
+    password: 'testpassword',
+    birthDate: new Date('1990-01-01'),
+};
+let userId: string;
 beforeAll(async () => {
     app = await initApp();
     await postModel.deleteMany();
-
-    //   await userModel.deleteMany();
-    //   await request(app).post("/auth/register").send(testUser);
-    //   const res = await request(app).post("/auth/login").send(testUser);
-    //   testUser.token = res.body.token;
-    //   testUser._id = res.body._id;
-    //   expect(testUser.token).toBeDefined();
+    await userModel.deleteMany();
+    const user = await userModel.create({ ...testUser });
+    userId = user._id.toJSON();
+    // await request(app).post('/auth/register').send(testUser);
+    // const res = await request(app).post('/auth/login').send(testUser);
+    // testUser.token = res.body.token;
+    // testUser._id = res.body._id;
+    // expect(testUser.token).toBeDefined();
 });
 
 afterAll((done) => {
@@ -51,7 +53,7 @@ describe('Posts Tests', () => {
             .send({
                 title: 'Test Post',
                 content: 'Test Content',
-                sender: 'TestSender',
+                sender: userId,
             });
         expect(statusCode).toBe(200);
         expect(title).toBe('Test Post');
@@ -63,7 +65,7 @@ describe('Posts Tests', () => {
         const {
             statusCode,
             body: { posts },
-        } = await request(app).get('/posts').query({ sender: 'TestSender' });
+        } = await request(app).get('/posts').query({ sender: userId });
         expect(statusCode).toBe(200);
         expect(posts.length).toBe(1);
         expect(posts[0].title).toBe('Test Post');
@@ -103,7 +105,7 @@ describe('Posts Tests', () => {
             .send({
                 title: 'Test Post 2',
                 content: 'Test Content 2',
-                sender: 'TestOwner2',
+                sender: userId,
             });
         expect(statusCode).toBe(200);
     });
