@@ -1,23 +1,32 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createComment, deleteComment, editComment, getCommentByID, getCommentsByPostID, getPostById } from '../dal';
+import {
+    createComment,
+    deleteComment,
+    editComment,
+    getCommentByID,
+    getCommentsByPostID,
+    getPostById,
+    getUserById,
+} from '../dal';
 
 export const commentRouter = Router();
 
 commentRouter.delete('/:id', async (req, res) => {
     const id = req.params.id;
-    if (!isValidObjectId(id)) {
-        res.status(400).send({ message: `id ${id} is not valid` });
+    if (!isValidObjectId(id) || (await getCommentByID(id)) === null) {
+        res.status(400).send({ message: `comment with id: ${id} doesn't exists` });
         return;
     }
+
     const deletedComment = await deleteComment(id);
     res.status(200).send({ deletedComment });
 });
 
 commentRouter.get('/post/:postID', async (req, res) => {
     const postID = req.params.postID;
-    if (!isValidObjectId(postID)) {
-        res.status(400).send({ message: `Post id ${postID} is not valid` });
+    if (!isValidObjectId(postID) || (await getPostById(postID)) === null) {
+        res.status(400).send({ message: `post with id: ${postID} doesn't exists` });
         return;
     }
 
@@ -32,12 +41,12 @@ commentRouter.post('/', async (req, res) => {
         res.status(400).send({ message: 'body param is missing (sender or postID)' });
         return;
     }
-    if (!isValidObjectId(postID)) {
-        res.status(400).send({ message: `invalid postID: ${postID}` });
+    if (!isValidObjectId(postID) || (await getPostById(postID)) === null) {
+        res.status(400).send({ message: `post with id: ${postID} doesn't exists` });
         return;
     }
-    if ((await getPostById(postID)) === null) {
-        res.status(400).send({ message: `post with id: ${postID} doesn't exists` });
+    if (!isValidObjectId(sender) || (await getUserById(sender)) === null) {
+        res.status(400).send({ message: `sender with id: ${sender} doesn't exists` });
         return;
     }
 
@@ -47,8 +56,8 @@ commentRouter.post('/', async (req, res) => {
 
 commentRouter.put('/:id', async (req, res) => {
     const { id } = req.params;
-    if (!isValidObjectId(id)) {
-        res.status(400).send({ message: `id: ${id} is not valid` });
+    if (!isValidObjectId(id) || (await getCommentByID(id)) === null) {
+        res.status(400).send({ message: `comment with id: ${id} doesn't exists` });
         return;
     }
 
@@ -59,13 +68,16 @@ commentRouter.put('/:id', async (req, res) => {
 });
 
 commentRouter.get('/:id', async (req, res) => {
-    const commentID = req.params.id;
+    const { id: commentID } = req.params;
     if (!isValidObjectId(commentID)) {
         res.status(400).send({ message: `Comment id ${commentID} is not valid` });
         return;
     }
 
     const comment = await getCommentByID(commentID);
+    if (!comment) {
+        res.status(404).send({ message: `comment with id: ${commentID} doesn't exists` });
+    }
 
     res.status(200).send({ comment });
 });

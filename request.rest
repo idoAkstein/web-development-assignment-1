@@ -81,11 +81,11 @@ Content-Type: application/json
 ###
 
 # update user
-PUT http://localhost:8080/users/677941ec866abf2b85f71c93
+PUT http://localhost:8080/users/67796f764899e36c4973095c
 Content-Type: application/json
 
 {
- "username": "ido1"
+ "username": "ido4"
 }
 
 ###
