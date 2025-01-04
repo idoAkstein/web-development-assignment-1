@@ -5,7 +5,7 @@ import { postModel } from '../models/post';
 import { Express } from 'express';
 // import userModel, { IUser } from "../models/users";
 
-var app: Express;
+let app: Express;
 
 // type User = IUser & { token?: string };
 // const testUser: User = {
