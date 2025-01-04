@@ -18,7 +18,7 @@ beforeAll(async () => {
     app = await initApp();
     await postModel.deleteMany();
     await userModel.deleteMany();
-    const user = await userModel.create({ ...testUser });
+    const user = await userModel.create(testUser);
     userId = user._id.toJSON();
     // await request(app).post('/auth/register').send(testUser);
     // const res = await request(app).post('/auth/login').send(testUser);
