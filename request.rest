@@ -69,3 +69,13 @@ Content-Type: application/json
 GET   http://localhost:8080/comments/674069829f3ed9c93edb75b0
 
 ###
+
+# create user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+ "username": "ido", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
+}
+
+###
