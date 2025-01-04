@@ -75,7 +75,7 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
- "username": "ido", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
+ "username": "ido3", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
 }
 
 ###
@@ -92,5 +92,10 @@ Content-Type: application/json
 
 # delete user
 DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
+
+###
+
+# get all users
+GET http://localhost:8080/users
 
 ###
