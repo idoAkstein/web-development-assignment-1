@@ -22,9 +22,9 @@ export const initApp = async () => {
         res.status(500).send({ message: 'Error' });
     });
 
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`listening on port ${port}`);
     });
 
-    return app;
+    return { app, server };
 };

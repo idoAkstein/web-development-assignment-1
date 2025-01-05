@@ -1,9 +1,8 @@
 import request from 'supertest';
-import { initApp } from '../server/initApp';
 import mongoose from 'mongoose';
-import { postModel } from '../models/post';
 import { Express } from 'express';
 import { User, userModel } from '../models/user';
+import { commentModel, postModel } from '../models';
 
 let app: Express;
 
@@ -15,9 +14,10 @@ const testUser: User = {
 };
 let userId: string;
 beforeAll(async () => {
-    app = await initApp();
-    await postModel.deleteMany();
+    app = await global.initTestServer();
+    await commentModel.deleteMany();
     await userModel.deleteMany();
+    await postModel.deleteMany();
     const user = await userModel.create(testUser);
     userId = user._id.toJSON();
     // await request(app).post('/auth/register').send(testUser);
@@ -27,9 +27,9 @@ beforeAll(async () => {
     // expect(testUser.token).toBeDefined();
 });
 
-afterAll((done) => {
+afterAll(async () => {
     mongoose.connection.close();
-    done();
+    await global.closeTestServer();
 });
 
 let postId = '';

@@ -1,12 +1,12 @@
 import request from 'supertest';
-import { initApp } from '../server/initApp';
 import mongoose from 'mongoose';
 import { commentModel } from '../models/comments';
 import { Express } from 'express';
 import { User, userModel } from '../models';
 import { postModel } from '../models';
 
-var app: Express;
+let app: Express;
+
 const testUser: User = {
     username: 'testuser',
     email: 'test@user.com',
@@ -14,23 +14,20 @@ const testUser: User = {
     birthDate: new Date('1990-01-01'),
 };
 let userId: string;
-let postID: string;
 
 beforeAll(async () => {
-    app = await initApp();
+    app = await global.initTestServer();
+
     await commentModel.deleteMany();
     await userModel.deleteMany();
     await postModel.deleteMany();
 });
 
-afterAll((done) => {
+afterAll(async () => {
     mongoose.connection.close();
     //close the connection of the server
-
-    done();
+    await global.closeTestServer();
 });
-
-let commentId = '';
 
 describe('Users Tests', () => {
     test('Test Create user', async () => {
