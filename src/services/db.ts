@@ -1,12 +1,10 @@
 import mongoose from 'mongoose';
+import { getConfig } from './config';
 
 export const initDBConnection = async () => {
-    const { DATABASE_URL } = process.env;
-    if (!DATABASE_URL) {
-        throw new Error('DATABASE_URL env var is missing');
-    }
+    const { databaseURL } = getConfig();
 
-    await mongoose.connect(DATABASE_URL);
+    await mongoose.connect(databaseURL);
 
     mongoose.connection.on('error', (error) => {
         console.error(error);

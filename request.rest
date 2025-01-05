@@ -70,16 +70,6 @@ GET   http://localhost:8080/comments/674069829f3ed9c93edb75b0
 
 ###
 
-# create user
-POST http://localhost:8080/users
-Content-Type: application/json
-
-{
- "username": "ido5", "password": "1234", "email": "ido@gmail.com", "birthDate": "1990-01-01"
-}
-
-###
-
 # update user
 PUT http://localhost:8080/users/67796f764899e36c4973095c
 Content-Type: application/json
@@ -102,5 +92,26 @@ GET http://localhost:8080/users/67796f764899e36c4973095c
 
 # get all users
 GET http://localhost:8080/users
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3N2FkNDk1MzU1OWZhN2RkYjU3N2RmNyIsImlhdCI6MTczNjEwNjUxMSwiZXhwIjoxNzM2MTEwMTExfQ.5AYpBYde8RuMr096d8jQvcAopUYP5clXKt3KPklDACQ
+
+###
+
+# register
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+    "username": "ido2", "password": "123456", "email": "ido@gmail.com","birthDate": "2002-10-26"
+}
+
+###
+
+# login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "username": "ido", "password": "123456"
+}
 
 ###

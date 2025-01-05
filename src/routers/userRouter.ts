@@ -1,23 +1,8 @@
 import { Router } from 'express';
 import { isValidObjectId } from 'mongoose';
-import { createUser, deleteUser, editUser, getAllUsers, getUserById, isUsernameExists } from '../dal';
+import { deleteUser, editUser, getAllUsers, getUserById } from '../dal';
 
 export const userRouter = Router();
-
-userRouter.post('/', async (req, res) => {
-    const { username, email, password, birthDate } = req.body;
-    if (!username || !email || !password || !birthDate) {
-        res.status(400).send({ message: 'body param is missing (username, email, password, birthDate)' });
-        return;
-    }
-    if (await isUsernameExists(username)) {
-        res.status(400).send({ message: `username: ${username} already exists` });
-        return;
-    }
-
-    const user = await createUser({ username, email, password, birthDate });
-    res.status(200).send(user);
-});
 
 userRouter.put('/:id', async (req, res) => {
     const { id } = req.params;
