@@ -1,6 +1,6 @@
 import { commentModel, postModel, User, userModel } from '../models';
 
-export const createUserInDB = async (user: User) => await userModel.create(user);
+export const createUserInDB = async (user: Omit<User, 'tokens'>) => await userModel.create(user);
 
 export const editUser = async (user: Partial<User>, id: string) => await userModel.findByIdAndUpdate(id, user);
 

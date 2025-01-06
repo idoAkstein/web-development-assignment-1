@@ -81,7 +81,7 @@ Content-Type: application/json
 ###
 
 # delete user
-DELETE http://localhost:8080/users/677941ec866abf2b85f71c93
+DELETE http://localhost:8080/users/677ae1f6b98980457edaa579
 
 ###
 
@@ -92,7 +92,6 @@ GET http://localhost:8080/users/67796f764899e36c4973095c
 
 # get all users
 GET http://localhost:8080/users
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3N2FkNDk1MzU1OWZhN2RkYjU3N2RmNyIsImlhdCI6MTczNjEwNjUxMSwiZXhwIjoxNzM2MTEwMTExfQ.5AYpBYde8RuMr096d8jQvcAopUYP5clXKt3KPklDACQ
 
 ###
 
@@ -101,7 +100,7 @@ POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
-    "username": "ido2", "password": "123456", "email": "ido@gmail.com","birthDate": "2002-10-26"
+    "username": "ido", "password": "123456", "email": "ido@gmail.com", "birthDate": "2002-10-26"
 }
 
 ###
@@ -112,6 +111,26 @@ Content-Type: application/json
 
 {
     "username": "ido", "password": "123456"
+}
+
+###
+
+# logout
+POST http://localhost:8080/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzdjMWY5YzMzMGU4YzdiNTk5OWQzNzAiLCJpYXQiOjE3MzYxOTE4ODEsImV4cCI6MTczNjI3ODI4MX0.RvL65B0TtouRbN6unAMmI2lAEmwQGtqAegxWcbFRz98"
+}
+
+###
+
+# refresh
+POST http://localhost:8080/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzdjMWY5YzMzMGU4YzdiNTk5OWQzNzAiLCJpYXQiOjE3MzYxOTE4NTcsImV4cCI6MTczNjI3ODI1N30.olJdjzUTKepAauVx8sNKeeDQPaU9B6E9xE7m4uzzYpI"
 }
 
 ###

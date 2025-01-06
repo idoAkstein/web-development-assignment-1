@@ -2,7 +2,7 @@ import { compare } from 'bcrypt';
 import { Router } from 'express';
 import { createUser } from '../bl';
 import { findUserByUsername, isUsernameExists } from '../dal';
-import { createToken } from '../services';
+import { createTokens, verifyRefreshToken } from '../services';
 
 export const authRouter = Router();
 
@@ -34,16 +34,39 @@ authRouter.post('/login', async (req, res) => {
         return;
     }
 
-    res.status(200).send({ token: createToken({ id: user._id }) });
+    const { accessToken, refreshToken } = createTokens({ _id: user._id });
+
+    user.tokens.push(refreshToken);
+    await user.save();
+
+    res.status(200).send({ accessToken, refreshToken });
 });
 
-authRouter.post('/logout', async (_req, res) => {
-    // const token = req.headers.authorization;
-    // if (!token) {
-    //     res.status(400).send({ message: 'token is missing' });
-    //     return;
-    // }
+authRouter.post('/logout', async (req, res) => {
+    try {
+        await verifyRefreshToken(req.body.refreshToken);
 
-    // await deleteToken(token);
-    res.status(200).send({ message: 'logout succeeded' });
+        res.status(200).send({ message: 'logout successful' });
+    } catch (err) {
+        res.status(400).send({ message: 'invalid token' });
+    }
+});
+
+authRouter.post('/refresh', async (req, res) => {
+    try {
+        const user = await verifyRefreshToken(req.body.refreshToken);
+        if (!user) {
+            res.status(400).send({ message: 'invalid token' });
+            return;
+        }
+
+        const { accessToken, refreshToken } = createTokens({ _id: user._id });
+
+        user.tokens.push(refreshToken);
+        await user.save();
+
+        res.status(200).send({ accessToken, refreshToken, _id: user._id });
+    } catch (error) {
+        res.status(400).send({ message: 'invalid token' });
+    }
 });

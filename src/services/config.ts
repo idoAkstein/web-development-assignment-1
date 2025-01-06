@@ -6,6 +6,7 @@ const REQUIRED_ENVIRONMENT_VARIABLES = [
     'ACCESS_TOKEN_SECRET',
     'REFRESH_TOKEN_SECRET',
     'TOKEN_EXPIRATION',
+    'REFRESH_TOKEN_EXPIRATION',
 ];
 
 const checkEnvironmentVariables = () => {
@@ -27,8 +28,9 @@ export const getConfig = () => {
         config = {
             databaseURL: env.DATABASE_URL,
             accessTokenSecret: env.ACCESS_TOKEN_SECRET,
+            accessTokenExpiration: env.TOKEN_EXPIRATION,
             refreshTokenSecret: env.REFRESH_TOKEN_SECRET,
-            tokenExpiration: env.TOKEN_EXPIRATION,
+            refreshTokenExpiration: env.REFRESH_TOKEN_EXPIRATION,
             port: Number(env.PORT) || 8080,
         };
     }

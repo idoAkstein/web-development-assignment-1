@@ -5,6 +5,7 @@ const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     birthDate: { type: Date, required: true },
+    tokens: { type: [String], default: [] },
 });
 
 export const userModel = model('users', userSchema);
