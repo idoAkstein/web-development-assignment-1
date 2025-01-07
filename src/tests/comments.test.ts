@@ -7,11 +7,13 @@ import { postModel } from '../models';
 
 let app: Express;
 
-const testUser: User = {
+let testUser: User & { _id: string } = {
     username: 'testuser',
     email: 'test@user.com',
     password: 'testpassword',
     birthDate: new Date('1990-01-01'),
+    tokens: [],
+    _id: '',
 };
 let userId: string;
 let postID: string;
@@ -23,8 +25,14 @@ beforeAll(async () => {
     await userModel.deleteMany();
     await postModel.deleteMany();
 
-    const user = await userModel.create(testUser);
-    userId = user._id.toJSON();
+    testUser = (await request(app).post('/auth/register').send(testUser)).body;
+    userId = testUser._id;
+    const { accessToken } = (
+        await request(app)
+            .post('/auth/login')
+            .send({ ...testUser, password: 'testpassword' })
+    ).body;
+    testUser.tokens = [accessToken];
 
     postID = (
         await postModel.create({
@@ -48,11 +56,14 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { content: expectedContent, postID: expectedPostId, sender: expectedSender, _id },
-        } = await request(app).post('/comments').send({
-            sender: userId,
-            content: 'Test Comment',
-            postID,
-        });
+        } = await request(app)
+            .post('/comments')
+            .send({
+                sender: userId,
+                content: 'Test Comment',
+                postID,
+            })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(expectedContent).toBe('Test Comment');
         expect(expectedPostId).toBe(postID);
@@ -66,7 +77,9 @@ describe('Comments Tests', () => {
             body: {
                 comment: { content: expectedContent, postID: expectedPostId, sender },
             },
-        } = await request(app).get('/comments/' + commentId);
+        } = await request(app)
+            .get('/comments/' + commentId)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(expectedContent).toBe('Test Comment');
         expect(expectedPostId).toBe(postID);
@@ -77,11 +90,14 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { content: expectedContent, postID: expectedPostId, sender: expectedSender },
-        } = await request(app).post('/comments').send({
-            sender: userId,
-            content: 'Test Comment 2',
-            postID,
-        });
+        } = await request(app)
+            .post('/comments')
+            .send({
+                sender: userId,
+                content: 'Test Comment 2',
+                postID,
+            })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(expectedContent).toBe('Test Comment 2');
         expect(expectedPostId).toBe(postID);
@@ -92,7 +108,9 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { comments },
-        } = await request(app).get('/comments/post/' + postID);
+        } = await request(app)
+            .get('/comments/post/' + postID)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(comments.length).toBe(2);
         expect(comments[0].content).toBe('Test Comment');
@@ -109,7 +127,8 @@ describe('Comments Tests', () => {
             body: { message },
         } = await request(app)
             .put('/comments/' + commentId)
-            .send({ content: 'Edited Comment' });
+            .send({ content: 'Edited Comment' })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(message).toBe('update succeeded');
     });
@@ -118,7 +137,9 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { deletedComment },
-        } = await request(app).delete('/comments/' + commentId);
+        } = await request(app)
+            .delete('/comments/' + commentId)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(200);
         expect(deletedComment.deletedCount).toBe(1);
     });
@@ -127,7 +148,9 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).delete('/comments/invalidID');
+        } = await request(app)
+            .delete('/comments/invalidID')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe("comment with id: invalidID doesn't exists");
     });
@@ -136,7 +159,9 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).get('/comments/invalidID');
+        } = await request(app)
+            .get('/comments/invalidID')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe('Comment id invalidID is not valid');
     });
@@ -145,7 +170,9 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).get('/comments/post/invalidID');
+        } = await request(app)
+            .get('/comments/post/invalidID')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe("post with id: invalidID doesn't exists");
     });
@@ -154,7 +181,10 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).post('/comments').send({ content: 'Test Comment' });
+        } = await request(app)
+            .post('/comments')
+            .send({ content: 'Test Comment' })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe('body param is missing (sender or postID)');
     });
@@ -163,7 +193,10 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).post('/comments').send({ sender: userId, content: 'Test Comment', postID: 'invalidID' });
+        } = await request(app)
+            .post('/comments')
+            .send({ sender: userId, content: 'Test Comment', postID: 'invalidID' })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe("post with id: invalidID doesn't exists");
     });
@@ -174,7 +207,8 @@ describe('Comments Tests', () => {
             body: { message },
         } = await request(app)
             .post('/comments')
-            .send({ sender: userId, content: 'Test Comment', postID: '60c4b7e3b7a1a4f3f8e8f3d7' });
+            .send({ sender: userId, content: 'Test Comment', postID: '60c4b7e3b7a1a4f3f8e8f3d7' })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe("post with id: 60c4b7e3b7a1a4f3f8e8f3d7 doesn't exists");
     });
@@ -183,7 +217,10 @@ describe('Comments Tests', () => {
         const {
             statusCode,
             body: { message },
-        } = await request(app).put('/comments/invalidID').send({ content: 'Edited Comment' });
+        } = await request(app)
+            .put('/comments/invalidID')
+            .send({ content: 'Edited Comment' })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
         expect(statusCode).toBe(400);
         expect(message).toBe("comment with id: invalidID doesn't exists");
     });
