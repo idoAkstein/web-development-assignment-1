@@ -1,19 +1,22 @@
 import bodyParser from 'body-parser';
 import { config } from 'dotenv';
 import Express, { NextFunction, Request, Response } from 'express';
-import { commentRouter, postRouter } from '../routers';
-import { userRouter } from '../routers/userRouter';
-import { initDBConnection } from '../services';
+import { authenticate } from '../middlewares';
+import { authRouter, commentRouter, postRouter, userRouter } from '../routers';
+import { getConfig, initDBConnection } from '../services';
 
 config();
 
 export const initApp = async () => {
     await initDBConnection();
+    const { port } = getConfig();
 
-    const port = process.env.PORT || 8080;
     const app = Express();
 
     app.use(bodyParser.json());
+    app.use('/auth', authRouter);
+
+    app.use(authenticate);
     app.use('/posts', postRouter);
     app.use('/comments', commentRouter);
     app.use('/users', userRouter);
