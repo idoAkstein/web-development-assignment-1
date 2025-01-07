@@ -77,16 +77,16 @@ describe('Auth Tests', () => {
         testUser.refreshToken = refreshToken;
     });
 
-    // test('Check tokens are not the same', async () => {
-    //     const response = await request(app)
-    //         .post(baseUrl + '/login')
-    //         .send(testUser);
-    //     const accessToken = response.body.accessToken;
-    //     const refreshToken = response.body.refreshToken;
+    test('Check tokens are not the same', async () => {
+        const response = await request(app)
+            .post(baseUrl + '/login')
+            .send(testUser);
+        const accessToken = response.body.accessToken;
+        const refreshToken = response.body.refreshToken;
 
-    //     expect(accessToken).not.toBe(testUser.accessToken);
-    //     expect(refreshToken).not.toBe(testUser.refreshToken);
-    // });
+        expect(accessToken).not.toBe(testUser.accessToken);
+        expect(refreshToken).not.toBe(testUser.refreshToken);
+    });
 
     test('Auth test login fail', async () => {
         const response = await request(app)
@@ -137,29 +137,29 @@ describe('Auth Tests', () => {
         testUser.refreshToken = response.body.refreshToken;
     });
 
-    // test('Double use refresh token', async () => {
-    //     const response = await request(app)
-    //         .post(baseUrl + '/refresh')
-    //         .send({
-    //             refreshToken: testUser.refreshToken,
-    //         });
-    //     expect(response.statusCode).toBe(200);
-    //     const refreshTokenNew = response.body.refreshToken;
+    test('Double use refresh token', async () => {
+        const response = await request(app)
+            .post(baseUrl + '/refresh')
+            .send({
+                refreshToken: testUser.refreshToken,
+            });
+        expect(response.statusCode).toBe(200);
+        const refreshTokenNew = response.body.refreshToken;
 
-    //     const response2 = await request(app)
-    //         .post(baseUrl + '/refresh')
-    //         .send({
-    //             refreshToken: testUser.refreshToken,
-    //         });
-    //     expect(response2.statusCode).not.toBe(200);
+        const response2 = await request(app)
+            .post(baseUrl + '/refresh')
+            .send({
+                refreshToken: testUser.refreshToken,
+            });
+        expect(response2.statusCode).not.toBe(200);
 
-    //     const response3 = await request(app)
-    //         .post(baseUrl + '/refresh')
-    //         .send({
-    //             refreshToken: refreshTokenNew,
-    //         });
-    //     expect(response3.statusCode).not.toBe(200);
-    // });
+        const response3 = await request(app)
+            .post(baseUrl + '/refresh')
+            .send({
+                refreshToken: refreshTokenNew,
+            });
+        expect(response3.statusCode).not.toBe(200);
+    });
 
     test('Test logout', async () => {
         const response = await request(app)
