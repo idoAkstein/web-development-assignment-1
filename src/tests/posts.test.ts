@@ -49,6 +49,18 @@ describe('Posts Tests', () => {
         expect(statusCode).toBe(200);
         expect(posts.length).toBe(0);
     });
+    test('Posts test get all non existin sender', async () => {
+        const { statusCode } = await request(app)
+            .get(`/posts/${userId}1`)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(400);
+    });
+    test('Posts test get all invalid sender id', async () => {
+        const { statusCode } = await request(app)
+            .get('/posts/123')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(400);
+    });
 
     test('Test Create Post', async () => {
         const {
@@ -67,6 +79,28 @@ describe('Posts Tests', () => {
         expect(content).toBe('Test Content');
         postId = _id;
     });
+    test('Test Create Post with invalid sender', async () => {
+        const { statusCode } = await request(app)
+            .post('/posts')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] })
+            .send({
+                title: 'Test Post',
+                content: 'Test Content',
+                sender: userId + '1',
+            });
+        expect(statusCode).toBe(400);
+    });
+    test('Test Create Post with invalid user id', async () => {
+        const { statusCode } = await request(app)
+            .post('/posts')
+            .set({ authorization: 'bearer ' + testUser.tokens[0] })
+            .send({
+                title: 'Test Post',
+                content: 'Test Content',
+                sender: '1',
+            });
+        expect(statusCode).toBe(400);
+    });
 
     test('Test get post by sender', async () => {
         const {
@@ -82,6 +116,21 @@ describe('Posts Tests', () => {
         expect(posts[0].content).toBe('Test Content');
     });
 
+    test('Test get post with invalid sender', async () => {
+        const { statusCode } = await request(app)
+            .get('/posts')
+            .query({ sender: `${userId}1` })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(400);
+    });
+    test('Test get post with invalid user id', async () => {
+        const { statusCode } = await request(app)
+            .get('/posts')
+            .query({ sender: `1` })
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(400);
+    });
+
     test('Test update post content', async () => {
         const {
             statusCode,
@@ -94,6 +143,24 @@ describe('Posts Tests', () => {
             });
         expect(statusCode).toBe(200);
         expect(modifiedCount).toBe(1);
+    });
+    test('Test update post content with non exsiting post', async () => {
+        const { statusCode } = await request(app)
+            .put(`/posts/${postId}1`)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] })
+            .send({
+                content: 'Test Content Updated',
+            });
+        expect(statusCode).toBe(400);
+    });
+    test('Test update post content with invalid post id', async () => {
+        const { statusCode } = await request(app)
+            .put(`/posts/${123}`)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] })
+            .send({
+                content: 'Test Content Updated',
+            });
+        expect(statusCode).toBe(400);
     });
 
     test('Test get post by id', async () => {
@@ -108,6 +175,18 @@ describe('Posts Tests', () => {
         expect(statusCode).toBe(200);
         expect(title).toBe('Test Post');
         expect(content).toBe('Test Content Updated');
+    });
+    test('Test get post with invalid id', async () => {
+        const { statusCode } = await request(app)
+            .get(`/posts/${123}`)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(400);
+    });
+    test('Test get post with non existin id', async () => {
+        const { statusCode } = await request(app)
+            .get(`/posts/677d616167ce3c54892ae6ad`)
+            .set({ authorization: 'bearer ' + testUser.tokens[0] });
+        expect(statusCode).toBe(404);
     });
 
     test('Test Create Post 2', async () => {
