@@ -41,69 +41,6 @@ afterAll(async () => {
 });
 
 describe('Users Tests', () => {
-    // test('Test Create user', async () => {
-    //     const {
-    //         statusCode,
-    //         body: { _id, username, email, password, birthDate },
-    //     } = await request(app).post('/users').send(testUser);
-    //     userId = _id;
-    //     expect(statusCode).toBe(200);
-    //     expect(username).toBe(testUser.username);
-    //     expect(email).toBe(testUser.email);
-    //     expect(password).toBe(testUser.password);
-    //     expect(birthDate).toBe(testUser.birthDate.toISOString());
-    // });
-    // test('Test create user with missing body param - username', async () => {
-    //     const { statusCode } = await request(app)
-    //         .post('/users')
-    //         .send({
-    //             email: 'example@gmail.com',
-    //             password: 'testpassword',
-    //             birthDate: new Date('1990-01-01'),
-    //         });
-    //     expect(statusCode).toBe(400);
-    // });
-    // test('Test create user with missing body param - email', async () => {
-    //     const { statusCode } = await request(app)
-    //         .post('/users')
-    //         .send({
-    //             username: 'tests242q',
-    //             password: 'testpassword',
-    //             birthDate: new Date('1990-01-01'),
-    //         });
-    //     expect(statusCode).toBe(400);
-    // });
-    // test('Test create user with missing body param - password', async () => {
-    //     const { statusCode } = await request(app)
-    //         .post('/users')
-    //         .send({
-    //             email: 'example@gmail.com',
-    //             username: 'testpassword',
-    //             birthDate: new Date('1990-01-01'),
-    //         });
-    //     expect(statusCode).toBe(400);
-    // });
-    // test('Test create user with missing body param - birthdate', async () => {
-    //     const { statusCode } = await request(app).post('/users').send({
-    //         email: 'example@gmail.com',
-    //         password: 'testpassword',
-    //         username: 'sfdsf',
-    //     });
-    //     expect(statusCode).toBe(400);
-    // });
-
-    // test('Test create user with existing username', async () => {
-    //     const { statusCode } = await request(app)
-    //         .post('/users')
-    //         .send({
-    //             username: 'testuser',
-    //             email: 'example@gmail.com',
-    //             password: 'testpassword',
-    //             birthDate: new Date('1990-01-01'),
-    //         });
-    //     expect(statusCode).toBe(400);
-    // });
-
     test('Edit user', async () => {
         const {
             statusCode,

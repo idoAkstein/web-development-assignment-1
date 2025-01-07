@@ -6,10 +6,15 @@ import { getConfig } from './config';
 
 const config = getConfig();
 
-export const createTokens = (payload: Record<string, any>) => ({
-    accessToken: createToken(payload, 'access'),
-    refreshToken: createToken(payload, 'refresh'),
-});
+export const createTokens = (payload: Record<string, any>) => {
+    const random = Math.random().toString();
+    const newPayload = { ...payload, random };
+
+    return {
+        accessToken: createToken(newPayload, 'access'),
+        refreshToken: createToken(newPayload, 'refresh'),
+    };
+};
 
 const createToken = (payload: Record<string, any>, type: 'access' | 'refresh') =>
     jwt.sign(payload, config[`${type}TokenSecret`], { expiresIn: config[`${type}TokenExpiration`] });
