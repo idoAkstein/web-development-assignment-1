@@ -65,7 +65,7 @@ authRouter.post('/refresh', async (req, res) => {
         user.tokens.push(refreshToken);
         await user.save();
 
-        res.status(200).send({ accessToken, refreshToken, _id: user._id });
+        res.status(200).send({ accessToken, refreshToken });
     } catch (error) {
         res.status(400).send({ message: 'invalid token' });
     }
