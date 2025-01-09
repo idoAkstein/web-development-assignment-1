@@ -35,7 +35,7 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UserWithoutId'
+ *             $ref: '#/components/schemas/LogInObject'
  *     responses:
  *       200:
  *         description: Successful login

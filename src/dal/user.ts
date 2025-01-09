@@ -10,9 +10,9 @@ export const deleteUser = async (id: string) => {
     await commentModel.deleteMany({ sender: id });
 };
 
-export const getUserById = async (id: string) => await userModel.findById(id).select('-__v -password');
+export const getUserById = async (id: string) => await userModel.findById(id).select('-__v');
 
-export const getAllUsers = async () => await userModel.find().select('-__v -password');
+export const getAllUsers = async () => await userModel.find().select('-__v');
 
 export const isUsernameExists = async (username: string) => (await userModel.countDocuments({ username })) > 0;
 
