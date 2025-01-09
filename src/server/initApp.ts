@@ -1,17 +1,30 @@
 import bodyParser from 'body-parser';
-import { config } from 'dotenv';
 import Express, { NextFunction, Request, Response } from 'express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
 import { authenticate } from '../middlewares';
 import { authRouter, commentRouter, postRouter, userRouter } from '../routers';
 import { getConfig, initDBConnection } from '../services';
-
-config();
 
 export const initApp = async () => {
     await initDBConnection();
     const { port } = getConfig();
 
     const app = Express();
+
+    const options = {
+        definition: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Web Dev Assignment 2 REST API',
+                version: '1.0.0',
+                description: 'REST server including authentication using JWT',
+            },
+            servers: [{ url: 'http://localhost:3000' }],
+        },
+        apis: ['./src/docs/*.ts'],
+    };
+    app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(options)));
 
     app.use(bodyParser.json());
     app.use('/auth', authRouter);

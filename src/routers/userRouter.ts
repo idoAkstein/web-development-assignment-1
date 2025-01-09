@@ -28,8 +28,8 @@ userRouter.delete('/:id', async (req, res) => {
 
 userRouter.get('/:id', async (req, res) => {
     const id = req.params.id;
-    if (!isValidObjectId(id) || (await getUserById(id)) === null) {
-        res.status(400).send({ message: `user with id: ${id} doesn't exists` });
+    if (!isValidObjectId(id)) {
+        res.status(400).send({ message: `id: ${id} is invalid` });
         return;
     }
 
