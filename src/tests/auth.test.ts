@@ -182,5 +182,39 @@ describe('Auth Tests', () => {
                 refreshToken: testUser.refreshToken,
             });
         expect(response3.statusCode).not.toBe(200);
+
+        const response4 = await request(app).post(baseUrl + '/logout');
+        expect(response4.statusCode).toBe(400);
+
+        const response5 = await request(app)
+            .post(baseUrl + '/logout')
+            .send({ refreshToken: 'aaaaaa' });
+        expect(response5.statusCode).toBe(400);
+    });
+
+    test('Test auth middleware', async () => {
+        const response = await request(app)
+            .post('/posts')
+            .send({ title: 'Test Post', content: 'Test Content', sender: testUser._id });
+        expect(response.statusCode).not.toBe(200);
+
+        const response2 = await request(app)
+            .post('/posts')
+            .set({ authorization: 'bear ' + testUser.accessToken })
+            .send({ title: 'Test Post', content: 'Test Content', sender: testUser._id });
+        expect(response2.statusCode).toBe(401);
+
+        const response3 = await request(app).post('/posts').set({ authorization: 'bearer aaaaaa' }).send({
+            title: 'Test Post',
+            content: 'Test Content',
+            sender: testUser._id,
+        });
+        expect(response3.statusCode).toBe(401);
+
+        const response4 = await request(app)
+            .post('/posts')
+            .set({ authorization: 'bearer ' + testUser.accessToken })
+            .send({ title: 'Test Post', content: 'Test Content', sender: testUser._id });
+        expect(response4.statusCode).toBe(200);
     });
 });

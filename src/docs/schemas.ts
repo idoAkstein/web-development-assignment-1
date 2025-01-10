@@ -41,6 +41,21 @@
  *         email: 'bob@gmail.com'
  *         password: '123456'
  *         birthDate: '1990-01-01'
+ *     LogInObject:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The user's username
+ *         password:
+ *           type: string
+ *           description: The user password
+ *       example:
+ *         username: 'bob'
+ *         password: '123456'
  *     UserWithoutId:
  *       type: object
  *       required:
